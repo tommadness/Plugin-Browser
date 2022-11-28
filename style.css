@@ -42,6 +42,7 @@ div.outdated {
     margin: 15px;
     display: grid;
     grid-template-columns: 60px auto auto;
+    grid-template-rows: min-content min-content min-content min-content;
     padding: 15px;
     border-radius: 5px;
 }
@@ -52,7 +53,7 @@ div.outdated {
 
 .Punchline {
     font-weight: bold;
-    margin-bottom: 15px;
+    margin-bottom: 25px;
 }
 
 .Tags {
