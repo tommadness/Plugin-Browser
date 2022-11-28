@@ -1,0 +1,70 @@
+body {
+    font-family: sans-serif;
+    color: white;
+}
+
+#pluginList {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+}
+
+#pluginList > *{
+    flex: 1 0 30%;
+}
+
+img {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+
+    grid-row: 1 / span 2;
+}
+
+.outdated {
+    opacity: .3;
+}
+
+.plugin {
+    background-color: #666;
+    margin: 15px;
+    display: grid;
+    grid-template-columns: 60px auto auto;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+.Punchline, .Description {
+    grid-column-start: 2;
+}
+
+.Tags {
+    grid-row-start: 4;
+    grid-column: 2 / span 2;
+    padding-left: 0;
+}
+
+.Tags > li {
+    display: inline-block;
+    margin-right: 5px;
+    padding: 5px;
+    border-radius: 15px;
+    background-color: lightgray;
+    color: gray;
+    margin-bottom: 5px;
+}
+
+.Name {
+    grid-column: 2;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.Name > a {
+    color: white;
+}
+
+.Author {
+    justify-self: right;
+    font-weight: bold;
+}

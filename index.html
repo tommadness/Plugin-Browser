@@ -1,0 +1,79 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="./style.css">
+    </head>
+
+<body>
+    <div id="pluginList">
+    </div>
+    <script>
+        const currentApi = 7;
+        const pluginMaster = './PluginMaster.json'
+        const pluginList = document.getElementById('pluginList');
+        const attributes = ["Author","Punchline","Description"]
+    
+        fetch(pluginMaster)
+        .then((response) => response.json())
+        .then((json) => {
+            json.sort(function(a,b) {return compareStrings(a.Name, b.Name)});
+            json.forEach(plugin => {
+                if((plugin.DalamudApiLevel == currentApi || plugin.DalamudApiLevel == currentApi - 1) && plugin.IsHide == false){
+                    const e = document.createElement('div');
+                    e.id = plugin.InternalName;
+                    e.classList.add("plugin");
+
+                    const icon = document.createElement('img');
+                    icon.src = `https://raw.githubusercontent.com/goatcorp/PluginDistD17/main/${plugin._Dip17Channel}/${plugin.InternalName}/images/icon.png`;
+                    icon.setAttribute("onerror","this.style.display='none'");
+                    e.prepend(icon);
+
+                    const name = document.createElement('div');
+                    name.classList.add("Name");
+                    const link = document.createElement('a');
+                    link.href = plugin.RepoUrl;
+                    link.innerText = plugin.Name;
+                    if(plugin.DalamudApiLevel == currentApi - 1) {
+                            link.innerText += " (Outdated)";
+                            e.classList.add("outdated");
+                        }
+                    name.append(link);
+                    e.append(name);
+                    attributes.forEach(attribute => {
+                        const elem = document.createElement('div');
+                        elem.innerText = plugin[attribute];
+                        elem.classList.add(attribute);
+                        e.append(elem);
+                    })
+                    const tags = document.createElement('ul');
+                    tags.classList.add("Tags");
+
+                    if(plugin.Tags !== null){
+                        plugin.Tags.forEach(tag => {
+                            const e = document.createElement('li');
+                            e.innerText = tag;
+                            tags.append(e);
+                        });
+                        e.append(tags);
+                    }
+                
+                    
+
+                    pluginList.append(e);
+                }
+            });
+        });
+
+
+    function compareStrings(a,b) {
+        a = a.toLowerCase();
+        b = b.toLowerCase();
+
+        return (a < b) ? -1 : (a > b) ? 1 : 0;
+    }
+    </script>
+</body>
+
+
+
+
+</html>
