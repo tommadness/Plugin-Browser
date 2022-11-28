@@ -50,6 +50,10 @@ div.outdated {
     grid-column-start: 2;
 }
 
+.Punchline {
+    font-weight: bold;
+}
+
 .Tags {
     grid-row-start: 4;
     grid-column: 2 / span 2;
