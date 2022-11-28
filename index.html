@@ -40,6 +40,10 @@
                     const link = document.createElement('a');
                     link.href = plugin.RepoUrl;
                     link.innerText = plugin.Name;
+                    if(plugin.IsTestingExclusive){
+                        link.innerText += " (Testing Exclusive)";
+                        link.classList.add("testingExclusive");
+                    }
                     if(plugin.DalamudApiLevel == currentApi - 1) {
                             link.innerText += " (Outdated)";
                             e.classList.add("outdated");
