@@ -25,9 +25,15 @@ img {
     margin-right: 10px;
 
     grid-row: 1 / span 2;
+    position: relative;
 }
 
-.outdated {
+img.outdated {
+    position: absolute;
+    z-index: 99;
+}
+
+div.outdated {
     opacity: .3;
 }
 

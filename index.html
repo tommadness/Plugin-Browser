@@ -8,7 +8,7 @@
     </div>
     <script>
         const currentApi = 7;
-        const pluginMaster = './PluginMaster.json'
+        const pluginMaster = location.hostname === "localhost" || location.hostname === "127.0.0.1" ? './PluginMaster.json' : "https://kamori.goats.dev/Plugin/PluginMaster"
         const pluginList = document.getElementById('pluginList');
         const attributes = ["Author","Punchline","Description"]
     
@@ -26,14 +26,18 @@
                     if(plugin.IconUrl !== null){
                         icon.src = plugin.IconUrl;
                     }
-                    else if(plugin.DalamudApiLevel == currentApi - 1){
-                        icon.src = "https://github.com/goatcorp/DalamudAssets/blob/master/UIRes/outdatedInstallableIcon.png?raw=true";
-                    }
                     else {
                         icon.src = `https://raw.githubusercontent.com/goatcorp/PluginDistD17/main/${plugin._Dip17Channel}/${plugin.InternalName}/images/icon.png`;
                     }
                     icon.setAttribute("onerror","this.src='https://github.com/goatcorp/DalamudAssets/blob/master/UIRes/defaultIcon.png?raw=true'");
                     e.prepend(icon);
+
+                    if(plugin.DalamudApiLevel == currentApi - 1){
+                        const outdated = document.createElement("img");
+                        outdated.src = "https://github.com/goatcorp/DalamudAssets/blob/master/UIRes/outdatedInstallableIcon.png?raw=true";
+                        outdated.classList.add("outdated");
+                        e.prepend(outdated);
+                    }
 
                     const name = document.createElement('div');
                     name.classList.add("Name");
