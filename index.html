@@ -17,7 +17,7 @@
         .then((json) => {
             json.sort(function(a,b) {return compareStrings(a.Name, b.Name)});
             json.forEach(plugin => {
-                if((plugin.DalamudApiLevel == currentApi || plugin.DalamudApiLevel == currentApi - 1) && plugin.IsHide == false){
+                if((plugin.DalamudApiLevel == currentApi || plugin.DalamudApiLevel == currentApi - 1)){
                     const e = document.createElement('div');
                     e.id = plugin.InternalName;
                     e.classList.add("plugin");
