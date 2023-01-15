@@ -95,11 +95,10 @@ img.outdated {
 h1,
 h2 {
     color: #2f89d6;
-    width: 100%;
+    width: 97%;
     flex: none !important;
     font-weight: normal;
     margin: 5px;
-    margin-left: 30px;
 }
 
 h2 {
