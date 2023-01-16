@@ -1,6 +1,6 @@
 {
   "pluginMasterUrl": "https://kamori.goats.dev/Plugin/PluginMaster",
-  "dalamudApiLevel": 8,
+  "pluginManagerUrl": "https://raw.githubusercontent.com/goatcorp/Dalamud/master/Dalamud/Plugin/Internal/PluginManager.cs",
   "adoptable": [
     "ACTEndcounter",
     "BlueMageHelper",

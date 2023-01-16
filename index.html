@@ -33,7 +33,7 @@
 
     <script type="module">
         import data from './data.json'assert { type: "json" };
-        const currentApi = data.dalamudApiLevel;
+
         const pluginMaster = location.hostname === "localhost" || location.hostname === "127.0.0.1" ? './PluginMaster.json' : data.pluginMasterUrl;
         const pluginList = document.getElementById('pluginList');
         const outdated = document.getElementById('outdated');
@@ -45,6 +45,15 @@
         const adoptableInternalNames = data.adoptable;
         const discontinuedInternalNames = data.discontinued;
         const obsoleteInternalNames = data.obsolete;
+
+        let currentApi;
+        await fetch(data.pluginManagerUrl)
+            .then((response) => response.text())
+            .then((pluginManagerText) => {
+                const match = pluginManagerText.match(/DalamudApiLevel = (?<apiLevel>\d+);/);
+                currentApi = parseInt(match.groups.apiLevel.trim());
+            });
+
         fetch(pluginMaster)
             .then((response) => response.json())
             .then((json) => {
