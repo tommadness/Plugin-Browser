@@ -29,9 +29,10 @@
             being replaced by another plugin. They won’t be coming back.</h2>
     </div>
 
-    <script>
-        const currentApi = 8;
-        const pluginMaster = location.hostname === "localhost" || location.hostname === "127.0.0.1" ? './PluginMaster.json' : "https://kamori.goats.dev/Plugin/PluginMaster"
+    <script type="module">
+        import data from './data.json'assert { type: "json" };
+        const currentApi = data.dalamudApiLevel;
+        const pluginMaster = location.hostname === "localhost" || location.hostname === "127.0.0.1" ? './PluginMaster.json' : data.pluginMasterUrl;
         const pluginList = document.getElementById('pluginList');
         const outdated = document.getElementById('outdated');
         const adoptable = document.getElementById('adoptable');
@@ -39,9 +40,9 @@
         const obsolete = document.getElementById('obsolete');
         const attributes = ["Author", "Punchline", "Description"]
 
-        const adoptableInternalNames = ["ACTEndcounter", "BlueMageHelper", "ChatEmoteColor", "ChatTranslator", "DeviceChangeFix", "DomanMahjongStatus", "EldenRing", "FantasyPlayer.Dalamud", "DalamudVox", "HidePadlock", "SupineSnail.JobGaugeAdjustments", "MPTimer", "MountCollectioner", "MouseTargetTooltip", "OceanFishin", "OhGeeCD", "QuoteOfTheLobby", "RemindMe", "ResetAudio", "Reset enmity command", "SideHUDPlugin", "SimpleCompare", "SizeMattersFishing", "TabTab"]
-        const discontinuedInternalNames = ["OopsAllLalafells"]
-        const obsoleteInternalNames = { "AccurateCountdown": "Replaced by EngageTimer", "BrowserHost.Plugin": "Replaced by Browsingway", "CharSyncPlugin": "Replaced by Character Data Sync", "ChatExtender": "Split into Chat Bubbles, Chat Translator, XIVLogger", "GoodMemory": "Now a vanilla feature", "JobIcons": "Replaced by PartyIcons", "SlideCast": "Now a feature in SimpleTweaks", "VoidList": "Replaced by Visibility", "WheresWOLdo": "Replaced by \"Where am I again?\"" }
+        const adoptableInternalNames = data.adoptable;
+        const discontinuedInternalNames = data.discontinued;
+        const obsoleteInternalNames = data.obsolete;
         fetch(pluginMaster)
             .then((response) => response.json())
             .then((json) => {
