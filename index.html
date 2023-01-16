@@ -41,32 +41,36 @@
 
         const adoptableInternalNames = ["ACTEndcounter", "BlueMageHelper", "ChatEmoteColor", "ChatTranslator", "DeviceChangeFix", "DomanMahjongStatus", "EldenRing", "FantasyPlayer.Dalamud", "DalamudVox", "HidePadlock", "SupineSnail.JobGaugeAdjustments", "MPTimer", "MountCollectioner", "MouseTargetTooltip", "OceanFishin", "OhGeeCD", "QuoteOfTheLobby", "RemindMe", "ResetAudio", "Reset enmity command", "SideHUDPlugin", "SimpleCompare", "SizeMattersFishing", "TabTab"]
         const discontinuedInternalNames = ["OopsAllLalafells"]
-        const obsoleteInternalNames = ["AccurateCountdown", "BrowserHost.Plugin", "CharSyncPlugin", "ChatExtender", "GoodMemory", "JobIcons", "SlideCast", "VoidList", "WheresWOLdo"]
+        const obsoleteInternalNames = { "AccurateCountdown": "Replaced by EngageTimer", "BrowserHost.Plugin": "Replaced by Browsingway", "CharSyncPlugin": "Replaced by Character Data Sync", "ChatExtender": "Split into Chat Bubbles, Chat Translator, XIVLogger", "GoodMemory": "Now a vanilla feature", "JobIcons": "Replaced by PartyIcons", "SlideCast": "Now a feature in SimpleTweaks", "VoidList": "Replaced by Visibility", "WheresWOLdo": "Replaced by \"Where am I again?\"" }
         fetch(pluginMaster)
             .then((response) => response.json())
             .then((json) => {
                 json.filter(plugin => validPlugin(plugin))
                     .sort(function (a, b) { return compareStrings(a.Name, b.Name) })
                     .forEach(plugin => {
-                        const e = createCard(plugin);
+                        if (Object.keys(obsoleteInternalNames).includes(plugin.InternalName)) {
+                            const e = createCard(plugin, "Obsolete");
+                            obsolete.append(e);
+                            return;
+                        }
                         if (plugin.DalamudApiLevel == currentApi) {
+                            const e = createCard(plugin);
                             pluginList.append(e);
                             return;
                         }
                         if (plugin.DalamudApiLevel == currentApi - 1) {
+                            const e = createCard(plugin, "Outdated");
                             outdated.append(e);
                             return;
                         }
                         if (adoptableInternalNames.includes(plugin.InternalName)) {
+                            const e = createCard(plugin, "Adoptable");
                             adoptable.append(e);
                             return;
                         }
                         if (discontinuedInternalNames.includes(plugin.InternalName)) {
+                            const e = createCard(plugin, "Discontinued");
                             discontinued.append(e);
-                            return;
-                        }
-                        if (obsoleteInternalNames.includes(plugin.InternalName)) {
-                            obsolete.append(e);
                             return;
                         }
 
@@ -82,10 +86,10 @@
         }
 
         function validPlugin(plugin) {
-            return plugin.DalamudApiLevel >= currentApi - 1 || (adoptableInternalNames + discontinuedInternalNames + obsoleteInternalNames).includes(plugin.InternalName);
+            return plugin.DalamudApiLevel >= currentApi - 1 || (adoptableInternalNames + discontinuedInternalNames + Object.keys(obsoleteInternalNames)).includes(plugin.InternalName);
         }
 
-        function createCard(plugin) {
+        function createCard(plugin, status = null) {
             const e = document.createElement('div');
             e.id = plugin.InternalName;
             e.classList.add("plugin");
@@ -116,11 +120,14 @@
                 link.innerText += " (Testing Exclusive)";
                 link.classList.add("testingExclusive");
             }
-            if (plugin.DalamudApiLevel < currentApi) {
-                link.innerText += " (Outdated)";
+            if (status !== null) {
+                link.innerText += ` (${status})`;
                 e.classList.add("outdated");
             }
             name.append(link);
+            if (status == "Obsolete") {
+                name.innerHTML += `<br><span class="reason">${obsoleteInternalNames[plugin.InternalName]}</span>`
+            }
             e.append(name);
             attributes.forEach(attribute => {
                 const elem = document.createElement('div');
