@@ -45,29 +45,32 @@
         fetch(pluginMaster)
             .then((response) => response.json())
             .then((json) => {
-                json.sort(function (a, b) { return compareStrings(a.Name, b.Name) });
-                json.forEach(plugin => {
-                    if (plugin.DalamudApiLevel == currentApi) {
+                json.filter(plugin => validPlugin(plugin))
+                    .sort(function (a, b) { return compareStrings(a.Name, b.Name) })
+                    .forEach(plugin => {
                         const e = createCard(plugin);
-                        pluginList.append(e);
-                    }
-                    else if (plugin.DalamudApiLevel == currentApi - 1) {
-                        const e = createCard(plugin);
-                        outdated.append(e);
-                    }
-                    else if (adoptableInternalNames.includes(plugin.InternalName)) {
-                        const e = createCard(plugin);
-                        adoptable.append(e);
-                    }
-                    else if (discontinuedInternalNames.includes(plugin.InternalName)) {
-                        const e = createCard(plugin);
-                        discontinued.append(e);
-                    }
-                    else if (obsoleteInternalNames.includes(plugin.InternalName)) {
-                        const e = createCard(plugin);
-                        obsolete.append(e);
-                    }
-                });
+                        if (plugin.DalamudApiLevel == currentApi) {
+                            pluginList.append(e);
+                            return;
+                        }
+                        if (plugin.DalamudApiLevel == currentApi - 1) {
+                            outdated.append(e);
+                            return;
+                        }
+                        if (adoptableInternalNames.includes(plugin.InternalName)) {
+                            adoptable.append(e);
+                            return;
+                        }
+                        if (discontinuedInternalNames.includes(plugin.InternalName)) {
+                            discontinued.append(e);
+                            return;
+                        }
+                        if (obsoleteInternalNames.includes(plugin.InternalName)) {
+                            obsolete.append(e);
+                            return;
+                        }
+
+                    });
             });
 
 
@@ -76,6 +79,10 @@
             b = b.toLowerCase();
 
             return (a < b) ? -1 : (a > b) ? 1 : 0;
+        }
+
+        function validPlugin(plugin) {
+            return plugin.DalamudApiLevel >= currentApi - 1 || (adoptableInternalNames + discontinuedInternalNames + obsoleteInternalNames).includes(plugin.InternalName);
         }
 
         function createCard(plugin) {
