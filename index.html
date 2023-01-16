@@ -48,14 +48,14 @@
                 json.filter(plugin => validPlugin(plugin))
                     .sort(function (a, b) { return compareStrings(a.Name, b.Name) })
                     .forEach(plugin => {
-                        if (Object.keys(obsoleteInternalNames).includes(plugin.InternalName)) {
-                            const e = createCard(plugin, "Obsolete");
-                            obsolete.append(e);
-                            return;
-                        }
                         if (plugin.DalamudApiLevel == currentApi) {
                             const e = createCard(plugin);
                             pluginList.append(e);
+                            return;
+                        }
+                        if (Object.keys(obsoleteInternalNames).includes(plugin.InternalName)) {
+                            const e = createCard(plugin, "Obsolete");
+                            obsolete.append(e);
                             return;
                         }
                         if (plugin.DalamudApiLevel == currentApi - 1) {
