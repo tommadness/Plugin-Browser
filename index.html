@@ -1,5 +1,5 @@
-<!--suppress JSUnresolvedVariable, JSIncompatibleTypesComparison -->
-<html lang="en">
+<!--suppress JSUnresolvedVariable, JSIncompatibleTypesComparison, HtmlRequiredLangAttribute -->
+<html>
 
 <head>
     <link rel="stylesheet" href="./style.css">
@@ -32,7 +32,18 @@
     </div>
 
     <script type="module">
-        import data from './data.json'assert { type: "json" };
+        const data = await fetch("data.json")
+            .then(response => response.json())
+            .then(json => {
+                return json;
+            });
+
+        const currentApi = await fetch(data.pluginManagerUrl)
+            .then((response) => response.text())
+            .then((pluginManagerText) => {
+                const match = pluginManagerText.match(/DalamudApiLevel = (?<apiLevel>\d+);/);
+                return parseInt(match.groups.apiLevel.trim());
+            });
 
         const pluginMaster = location.hostname === "localhost" || location.hostname === "127.0.0.1" ? './PluginMaster.json' : data.pluginMasterUrl;
         const pluginList = document.getElementById('pluginList');
@@ -45,14 +56,6 @@
         const adoptableInternalNames = data.adoptable;
         const discontinuedInternalNames = data.discontinued;
         const obsoleteInternalNames = data.obsolete;
-
-        let currentApi;
-        await fetch(data.pluginManagerUrl)
-            .then((response) => response.text())
-            .then((pluginManagerText) => {
-                const match = pluginManagerText.match(/DalamudApiLevel = (?<apiLevel>\d+);/);
-                currentApi = parseInt(match.groups.apiLevel.trim());
-            });
 
         fetch(pluginMaster)
             .then((response) => response.json())
@@ -87,7 +90,6 @@
 
                     });
             });
-
 
         function compareStrings(a, b) {
             a = a.toLowerCase();
