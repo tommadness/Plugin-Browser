@@ -1,7 +1,9 @@
-<html>
+<!--suppress JSUnresolvedVariable, JSIncompatibleTypesComparison -->
+<html lang="en">
 
 <head>
     <link rel="stylesheet" href="./style.css">
+    <title>Plugin-Browser</title>
 </head>
 
 <body>
@@ -49,7 +51,7 @@
                 json.filter(plugin => validPlugin(plugin))
                     .sort(function (a, b) { return compareStrings(a.Name, b.Name) })
                     .forEach(plugin => {
-                        if (plugin.DalamudApiLevel == currentApi) {
+                        if (plugin.DalamudApiLevel === currentApi) {
                             const e = createCard(plugin);
                             pluginList.append(e);
                             return;
@@ -59,7 +61,7 @@
                             obsolete.append(e);
                             return;
                         }
-                        if (plugin.DalamudApiLevel == currentApi - 1) {
+                        if (plugin.DalamudApiLevel === currentApi - 1) {
                             const e = createCard(plugin, "Outdated");
                             outdated.append(e);
                             return;
@@ -72,7 +74,6 @@
                         if (discontinuedInternalNames.includes(plugin.InternalName)) {
                             const e = createCard(plugin, "Discontinued");
                             discontinued.append(e);
-                            return;
                         }
 
                     });
@@ -105,7 +106,7 @@
             icon.setAttribute("onerror", "this.src='https://github.com/goatcorp/DalamudAssets/blob/master/UIRes/defaultIcon.png?raw=true'");
             e.prepend(icon);
 
-            if (plugin.DalamudApiLevel == currentApi - 1) {
+            if (plugin.DalamudApiLevel === currentApi - 1) {
                 const outdated = document.createElement("img");
                 outdated.src = "https://github.com/goatcorp/DalamudAssets/blob/master/UIRes/outdatedInstallableIcon.png?raw=true";
                 outdated.classList.add("outdated");
@@ -126,7 +127,7 @@
                 e.classList.add("outdated");
             }
             name.append(link);
-            if (status == "Obsolete") {
+            if (status === "Obsolete") {
                 name.innerHTML += `<br><span class="reason">${obsoleteInternalNames[plugin.InternalName]}</span>`
             }
             e.append(name);
