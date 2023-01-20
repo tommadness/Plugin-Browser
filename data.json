@@ -1,0 +1,42 @@
+{
+  "pluginMasterUrl": "https://kamori.goats.dev/Plugin/PluginMaster",
+  "pluginManagerUrl": "https://raw.githubusercontent.com/goatcorp/Dalamud/master/Dalamud/Plugin/Internal/PluginManager.cs",
+  "adoptable": [
+    "ACTEndcounter",
+    "BlueMageHelper",
+    "ChatEmoteColor",
+    "ChatTranslator",
+    "DomanMahjongStatus",
+    "FantasyPlayer.Dalamud",
+    "DalamudVox",
+    "HidePadlock",
+    "SupineSnail.JobGaugeAdjustments",
+    "MPTimer",
+    "MountCollectioner",
+    "MouseTargetTooltip",
+    "OceanFishin",
+    "OhGeeCD",
+    "QuoteOfTheLobby",
+    "RemindMe",
+    "ResetAudio",
+    "Reset enmity command",
+    "SideHUDPlugin",
+    "SimpleCompare",
+    "SizeMattersFishing",
+    "TabTab"
+  ],
+  "discontinued": [
+    "OopsAllLalafells"
+  ],
+  "obsolete": {
+    "AccurateCountdown": "Replaced by EngageTimer",
+    "BrowserHost.Plugin": "Replaced by Browsingway",
+    "CharSyncPlugin": "Replaced by Character Data Sync",
+    "ChatExtender": "Split into Chat Bubbles, Chat Translator, XIVLogger",
+    "GoodMemory": "Now a vanilla feature",
+    "JobIcons": "Replaced by PartyIcons",
+    "SlideCast": "Now a feature in SimpleTweaks",
+    "VoidList": "Replaced by Visibility",
+    "WheresWOLdo": "Replaced by \"Where am I again?\""
+  }
+}
