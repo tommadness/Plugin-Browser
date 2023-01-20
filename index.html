@@ -99,7 +99,7 @@
         }
 
         function validPlugin(plugin) {
-            return plugin.DalamudApiLevel >= currentApi - 1 || (adoptableInternalNames + discontinuedInternalNames + Object.keys(obsoleteInternalNames)).includes(plugin.InternalName);
+            return (plugin.DalamudApiLevel >= currentApi - 1 || (adoptableInternalNames + discontinuedInternalNames + Object.keys(obsoleteInternalNames)).includes(plugin.InternalName)) && !plugin.IsHide;
         }
 
         function createCard(plugin, status = null) {
