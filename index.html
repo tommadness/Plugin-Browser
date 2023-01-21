@@ -63,7 +63,7 @@
                 json.filter(plugin => validPlugin(plugin))
                     .sort(function (a, b) { return compareStrings(a.Name, b.Name) })
                     .forEach(plugin => {
-                        if (plugin.DalamudApiLevel === currentApi) {
+                        if (plugin.DalamudApiLevel === currentApi && !plugin.IsHide) {
                             const e = createCard(plugin);
                             pluginList.append(e);
                             return;
@@ -99,7 +99,7 @@
         }
 
         function validPlugin(plugin) {
-            return (plugin.DalamudApiLevel >= currentApi - 1 || (adoptableInternalNames + discontinuedInternalNames + Object.keys(obsoleteInternalNames)).includes(plugin.InternalName)) && !plugin.IsHide;
+            return plugin.DalamudApiLevel >= currentApi - 1 || (adoptableInternalNames + discontinuedInternalNames + Object.keys(obsoleteInternalNames)).includes(plugin.InternalName);
         }
 
         function createCard(plugin, status = null) {
