@@ -73,11 +73,6 @@
                             obsolete.append(e);
                             return;
                         }
-                        if (plugin.DalamudApiLevel === currentApi - 1) {
-                            const e = createCard(plugin, "Outdated");
-                            outdated.append(e);
-                            return;
-                        }
                         if (adoptableInternalNames.includes(plugin.InternalName)) {
                             const e = createCard(plugin, "Adoptable");
                             adoptable.append(e);
@@ -87,6 +82,12 @@
                             const e = createCard(plugin, "Discontinued");
                             discontinued.append(e);
                         }
+                        if (plugin.DalamudApiLevel === currentApi - 1) {
+                            const e = createCard(plugin, "Outdated");
+                            outdated.append(e);
+                            return;
+                        }
+
 
                     });
             });
