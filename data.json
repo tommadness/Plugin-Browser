@@ -24,7 +24,11 @@
     "SimpleCompare",
     "SizeMattersFishing",
     "TabTab",
-    "Mappy"
+    "Mappy",
+    "Distance",
+    "ReadyCheckHelper",
+    "WhatDidYouSay",
+    "WaymarkPresetPlugin",
   ],
   "discontinued": [
     "OopsAllLalafells"
