@@ -24,7 +24,12 @@
     "SideHUDPlugin",
     "SimpleCompare",
     "SizeMattersFishing",
-    "TabTab"
+    "TabTab",
+    "Mappy",
+    "Distance",
+    "ReadyCheckHelper",
+    "WhatDidYouSay",
+    "WaymarkPresetPlugin"
   ],
   "discontinued": [
     "OopsAllLalafells"
