@@ -68,7 +68,7 @@
                 json.filter(plugin => validPlugin(plugin))
                     .sort(function (a, b) { return compareStrings(a.Name, b.Name) })
                     .forEach(plugin => {
-                        if (plugin.DalamudApiLevel === currentApi && !plugin.IsHide) {
+                        if (plugin.DalamudApiLevel === currentApi) {
                             const e = createCard(plugin);
                             pluginList.append(e);
                             return;
@@ -115,7 +115,7 @@
             console.log(plugin.InternalName);
             const banned = bannedPlugins.find(obj => {
                 return obj.Name == plugin.InternalName && obj.AssemblyVersion == plugin.AssemblyVersion
-            });
+            }) !== undefined;
             console.log(banned);
             const icon = document.createElement('img');
             if (plugin.IconUrl !== null) {
@@ -152,7 +152,7 @@
                 name.innerHTML += `<br><span class="reason">${obsoleteInternalNames[plugin.InternalName]}</span>`
             }
 
-            if (banned !== undefined) {
+            if (banned) {
                 e.classList.add("banned");
                 name.innerHTML += "<span> Current version can not be installed. Please wait for update.</span>";
             }
