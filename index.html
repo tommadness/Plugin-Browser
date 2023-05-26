@@ -112,6 +112,7 @@
             const e = document.createElement('div');
             e.id = plugin.InternalName;
             e.classList.add("plugin");
+            console.log(plugin.InternalName);
             const banned = bannedPlugins.find(obj => {
                 return obj.Name == plugin.InternalName && obj.AssemblyVersion == plugin.AssemblyVersion
             });
