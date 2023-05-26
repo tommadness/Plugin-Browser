@@ -45,6 +45,11 @@
                 return parseInt(match.groups.apiLevel.trim());
             });
 
+        const bannedPlugins = await fetch(data.bannedPluginUrl)
+            .then((response) => response.json());
+
+        console.log(bannedPlugins);
+
         const pluginMaster = location.hostname === "localhost" || location.hostname === "127.0.0.1" ? './PluginMaster.json' : data.pluginMasterUrl;
         const pluginList = document.getElementById('pluginList');
         const outdated = document.getElementById('outdated');
@@ -106,7 +111,8 @@
             const e = document.createElement('div');
             e.id = plugin.InternalName;
             e.classList.add("plugin");
-
+            const banned = bannedPlugins.find(obj =>
+                obj.Name == plugin.InternalName && obj.AssemblyVersion == plugin.AssemblyVersion) !== undefined
             const icon = document.createElement('img');
             if (plugin.IconUrl !== null) {
                 icon.src = plugin.IconUrl;
@@ -141,6 +147,12 @@
             if (status === "Obsolete") {
                 name.innerHTML += `<br><span class="reason">${obsoleteInternalNames[plugin.InternalName]}</span>`
             }
+
+            if (banned) {
+                e.classList.add("banned");
+                name.innerHTML += "<span> Current version can not be installed. Please wait for update.</span>";
+            }
+
             e.append(name);
             attributes.forEach(attribute => {
                 const elem = document.createElement('div');

@@ -1,3 +1,18 @@
+@media screen and (max-width: 1000px) {
+    .pluginList {
+        display: block;
+    }
+
+    .pluginList>* {
+        flex: none !important;
+        width: 95%;
+    }
+
+    .plugin {
+        display: block !important;
+    }
+}
+
 body {
     font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: white;
@@ -43,7 +58,8 @@ img.outdated {
     border-radius: 5px;
 }
 
-.outdated {
+.outdated,
+.banned {
     opacity: .7;
 }
 
@@ -105,13 +121,7 @@ h2 {
     color: #606c71;
 }
 
-.reason {
+.reason,
+.banned .Name span {
     font-size: 1.2rem;
-}
-
-@media screen and (max-width: 900px) {
-    .pluginList>* {
-        flex: none !important;
-        width: 95%;
-    }
 }
