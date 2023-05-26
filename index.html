@@ -113,7 +113,9 @@
             e.id = plugin.InternalName;
             e.classList.add("plugin");
             const banned = bannedPlugins.find(obj =>
-                obj.Name == plugin.InternalName && obj.AssemblyVersion == plugin.AssemblyVersion) !== undefined
+                obj.Name == plugin.InternalName && obj.AssemblyVersion == plugin.AssemblyVersion) !== undefined;
+            console.log(plugin.InternalName);
+            console.log(banned);
             const icon = document.createElement('img');
             if (plugin.IconUrl !== null) {
                 icon.src = plugin.IconUrl;
