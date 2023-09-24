@@ -20,6 +20,11 @@
         <h2>These plugins are abandoned by their original developer and haven’t been adopted. If you’re interested in
             taking over development, please reach out to the developer and let us know on discord.</h2>
     </div>
+    <div id="stale" class="pluginList">
+        <h1>Stale Plugins</h1>
+        <h2>These plugins have not been officially discontinued but have not been updated for a significant period
+            of time. The developer remains active in the community. They may be coming back.</h2>
+    </div>
     <div id="discontinued" class="pluginList">
         <h1>Discontinued Plugins</h1>
         <h2>These plugins have been discontinued due to our plugin rules or the developer’s discretion. They won’t be
@@ -54,11 +59,13 @@
         const pluginList = document.getElementById('pluginList');
         const outdated = document.getElementById('outdated');
         const adoptable = document.getElementById('adoptable');
+        const stale = document.getElementById('stale');
         const discontinued = document.getElementById('discontinued');
         const obsolete = document.getElementById('obsolete');
         const attributes = ["Author", "Punchline", "Description"]
 
         const adoptableInternalNames = data.adoptable;
+        const staleInternalNames = data.stale;
         const discontinuedInternalNames = data.discontinued;
         const obsoleteInternalNames = data.obsolete;
 
@@ -83,6 +90,10 @@
                             adoptable.append(e);
                             return;
                         }
+                        if (staleInternalNames.includes(plugin.InternalName)) {
+                            const e = createCard(plugin, "Stale");
+                            stale.append(e);
+                        }
                         if (discontinuedInternalNames.includes(plugin.InternalName)) {
                             const e = createCard(plugin, "Discontinued");
                             discontinued.append(e);
@@ -90,9 +101,7 @@
                         if (plugin.DalamudApiLevel === currentApi - 1) {
                             const e = createCard(plugin, "Outdated");
                             outdated.append(e);
-                            return;
                         }
-
 
                     });
             });
@@ -105,7 +114,8 @@
         }
 
         function validPlugin(plugin) {
-            return plugin.DalamudApiLevel >= currentApi - 1 || (adoptableInternalNames + discontinuedInternalNames + Object.keys(obsoleteInternalNames)).includes(plugin.InternalName);
+            return plugin.DalamudApiLevel >= currentApi - 1 || (adoptableInternalNames + staleInternalNames +
+                discontinuedInternalNames + Object.keys(obsoleteInternalNames)).includes(plugin.InternalName);
         }
 
         function createCard(plugin, status = null) {
@@ -114,7 +124,7 @@
             e.classList.add("plugin");
             console.log(plugin.InternalName);
             const banned = bannedPlugins.find(obj => {
-                return obj.Name == plugin.InternalName && obj.AssemblyVersion == plugin.AssemblyVersion
+                return obj.Name === plugin.InternalName && obj.AssemblyVersion === plugin.AssemblyVersion
             }) !== undefined;
             console.log(banned);
             const icon = document.createElement('img');
@@ -180,8 +190,4 @@
         }
     </script>
 </body>
-
-
-
-
 </html>

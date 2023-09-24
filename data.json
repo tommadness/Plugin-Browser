@@ -36,6 +36,11 @@
     "WhatDidYouSay",
     "WaymarkPresetPlugin"
   ],
+  "stale": [
+    "BetterPartyFinder",
+    "KikoGuide",
+    "TheHeartOfTheParty"
+  ],
   "discontinued": [
     "OopsAllLalafells"
   ],
