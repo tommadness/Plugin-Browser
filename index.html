@@ -43,12 +43,12 @@
                 return json;
             });
 
-        const currentApi = await fetch(data.pluginManagerUrl)
-            .then((response) => response.text())
-            .then((pluginManagerText) => {
-                const match = pluginManagerText.match(/DalamudApiLevel = (?<apiLevel>\d+);/);
-                return parseInt(match.groups.apiLevel.trim());
-            });
+		const currentApi = await fetch(data.dalamudProjUrl)
+			.then((response) => response.text())
+			.then((dalamudProjUrlText) => {
+				const match = dalamudProjUrlText.match(/<DalamudVersion>(\d+)\.\d+\.\d+\.\d+<\/DalamudVersion>/);
+				return match ? parseInt(match[1].trim()) : null;
+			});
 
         const bannedPlugins = await fetch(data.bannedPluginUrl)
             .then((response) => response.json());
