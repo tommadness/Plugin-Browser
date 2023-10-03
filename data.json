@@ -34,7 +34,8 @@
     "Distance",
     "ReadyCheckHelper",
     "WhatDidYouSay",
-    "WaymarkPresetPlugin"
+    "WaymarkPresetPlugin",
+    "autoSweep"
   ],
   "stale": [
     "BetterPartyFinder",
