@@ -4,6 +4,7 @@
   "bannedPluginUrl": "https://raw.githubusercontent.com/goatcorp/DalamudAssets/master/UIRes/bannedplugin.json",
   "adoptable": [
     "ACTEndcounter",
+    "autoSweep",
     "BlueMageHelper",
     "ChatEmoteColor",
     "ChatTranslator",
@@ -35,7 +36,6 @@
     "ReadyCheckHelper",
     "WhatDidYouSay",
     "WaymarkPresetPlugin",
-    "autoSweep"
   ],
   "stale": [
     "BetterPartyFinder",
