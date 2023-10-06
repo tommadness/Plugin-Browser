@@ -5,7 +5,6 @@
   "adoptable": [
     "ACTEndcounter",
     "autoSweep",
-    "BlueMageHelper",
     "ChatEmoteColor",
     "ChatTranslator",
     "CoinPouch",
@@ -33,10 +32,7 @@
     "TabTab",
     "TheDot",
     "Tippy",
-    "Distance",
-    "ReadyCheckHelper",
-    "WhatDidYouSay",
-    "WaymarkPresetPlugin"
+    "WhatDidYouSay"
   ],
   "stale": [
     "BetterPartyFinder",
