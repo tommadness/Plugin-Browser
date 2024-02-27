@@ -4,6 +4,7 @@
   "bannedPluginUrl": "https://raw.githubusercontent.com/goatcorp/DalamudAssets/master/UIRes/bannedplugin.json",
   "adoptable": [
     "ACTEndcounter",
+    "AutoMammet",
     "autoSweep",
     "ChatEmoteColor",
     "ChatTranslator",
