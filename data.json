@@ -13,13 +13,14 @@
     "FantasyPlayer.Dalamud",
     "DalamudVox",
     "Distance",
+    "ExpandedSearchInfo",
     "GearsetHelperPlugin",
+    "Glamaholic",
     "HidePadlock",
     "SupineSnail.JobGaugeAdjustments",
     "MPTimer",
     "MountCollectioner",
     "MouseTargetTooltip",
-    "NeatNoter",
     "OceanFishin",
     "OhGeeCD",
     "PartyListLayout",
@@ -38,7 +39,6 @@
     "WhatDidYouSay"
   ],
   "stale": [
-    "BetterPartyFinder",
     "KikoGuide",
     "TheHeartOfTheParty"
   ],
