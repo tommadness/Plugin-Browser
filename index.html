@@ -1,45 +1,88 @@
 <!--suppress JSUnresolvedVariable, JSIncompatibleTypesComparison, HtmlRequiredLangAttribute -->
-<html>
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <title>Dalamud Plugin Browser</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="./style.css">
-    <title>Plugin-Browser</title>
 </head>
 
-<body>
-    <div id="pluginList" class="pluginList">
-        <h1>Available Plugins</h1>
-    </div>
-    <div id="outdated" class="pluginList">
-        <h1>Outdated Plugins</h1>
-        <h2>These plugins have not been updated by the developer for the current API level. Please be patient while they
-            are updated!</h2>
-    </div>
-    <div id="adoptable" class="pluginList">
-        <h1>Adoptable Plugins</h1>
-        <h2>These plugins are abandoned by their original developer and haven’t been adopted. If you’re interested in
-            taking over development, please reach out to the developer and let us know on discord.</h2>
-    </div>
-    <div id="stale" class="pluginList">
-        <h1>Stale Plugins</h1>
-        <h2>These plugins have not been officially discontinued but have not been updated for the current API level for
-            over six months. The developer remains active in the community. They may be coming back.</h2>
-    </div>
-    <div id="discontinued" class="pluginList">
-        <h1>Discontinued Plugins</h1>
-        <h2>These plugins have been discontinued due to our plugin rules or the developer’s discretion. They won’t be
-            coming back.</h2>
-    </div>
-    <div id="obsolete" class="pluginList">
-        <h1>Obsolete Plugins</h1>
-        <h2>These plugins are now obsolete and no longer needed. This can be due to new features added to the game or by
-            being replaced by another plugin. They won’t be coming back.</h2>
-    </div>
+<body class="loading">
+    <header>
+        <h1>Dalamud Plugin Browser</h1>
+        <div class="right">
+            <button id="color-scheme" type="button"></button>
+            <input id="search" type="search" placeholder="Filter">
+        </div>
+    </header>
+
+    <main>
+        <h2>Available Plugins</h2>
+        <section id="available">
+            <ol class="plugin-list"></ol>
+        </section>
+
+        <h2>Outdated Plugins</h2>
+        <section id="outdated">
+            <p>These plugins have not been updated by the developer for the current API level. Please be patient while they are being updated!</p>
+            <ol class="plugin-list"></ol>
+        </section>
+
+        <h2>Adoptable Plugins</h2>
+        <section id="adoptable">
+            <p>These plugins have been abandoned by their original developer. If you're interested in taking over development, please reach out to the developer and let us know on Discord.</p>
+            <ol class="plugin-list"></ol>
+        </section>
+
+        <h2>Stale Plugins</h2>
+        <section id="stale">
+            <p>These plugins have not been officially discontinued but have not been updated for the current API level in over six months. The developer remains active in the community. They may be coming back.</p>
+            <ol class="plugin-list"></ol>
+        </section>
+
+        <h2>Discontinued Plugins</h2>
+        <section id="discontinued">
+            <p>These plugins have been discontinued due to our plugin rules or the developer's discretion. They won't be coming back.</p>
+            <ol class="plugin-list"></ol>
+        </section>
+
+        <h2>Obsolete Plugins</h2>
+        <section id="obsolete">
+            <p>These plugins are now obsolete and are no longer needed. This can be due to new features added to the game or by being replaced by another plugin. They won't be coming back.</p>
+            <ol class="plugin-list"></ol>
+        </section>
+    </main>
 
     <script type="module">
-        const data = await fetch("data.json")
-            .then(response => response.json())
-            .then(json => {
+        // dark mode
+        function setDarkMode(dark, noSave) {
+            document.getElementById('color-scheme').innerText = dark ? '🌕' : '☀️';
+            document.body.style.colorScheme = dark ? 'dark' : 'light';
+            if (!noSave) {
+                localStorage.setItem('colorScheme', dark ? 'dark' : 'light');
+            }
+        }
+
+        function toggleDarkMode() {
+            setDarkMode(document.body.style.colorScheme === 'dark' ? false : true);
+        }
+
+        const savedColorScheme = localStorage.getItem('colorScheme');
+        if (!savedColorScheme) {
+            const darkModeQuery = matchMedia('(prefers-color-scheme: dark)');
+            setDarkMode(darkModeQuery.matches, true);
+        } else {
+            setDarkMode(savedColorScheme === 'dark', true);
+        }
+
+        document.getElementById('color-scheme').addEventListener('click', toggleDarkMode);
+
+
+        // plugins
+        const data = await fetch('data.json')
+            .then((response) => response.json())
+            .then((json) => {
                 return json;
             });
 
@@ -53,141 +96,209 @@
         const bannedPlugins = await fetch(data.bannedPluginUrl)
             .then((response) => response.json());
 
-        console.log(bannedPlugins);
-
-        const pluginMaster = location.hostname === "localhost" || location.hostname === "127.0.0.1" ? './PluginMaster.json' : data.pluginMasterUrl;
-        const pluginList = document.getElementById('pluginList');
-        const outdated = document.getElementById('outdated');
-        const adoptable = document.getElementById('adoptable');
-        const stale = document.getElementById('stale');
-        const discontinued = document.getElementById('discontinued');
-        const obsolete = document.getElementById('obsolete');
-        const attributes = ["Author", "Punchline", "Description"]
+        const pluginMaster = location.hostname === 'localhost' || location.hostname === '127.0.0.1' ? './PluginMaster.json' : data.pluginMasterUrl;
+        const availablePlugins = document.getElementById('available').querySelector('ol');
+        const outdatedPlugins = document.getElementById('outdated').querySelector('ol');
+        const adoptablePlugins = document.getElementById('adoptable').querySelector('ol');
+        const stalePlugins = document.getElementById('stale').querySelector('ol');
+        const discontinuedPlugins = document.getElementById('discontinued').querySelector('ol');
+        const obsoletePlugins = document.getElementById('obsolete').querySelector('ol');
 
         const adoptableInternalNames = data.adoptable;
         const staleInternalNames = data.stale;
         const discontinuedInternalNames = data.discontinued;
         const obsoleteInternalNames = data.obsolete;
 
-        fetch(pluginMaster)
-            .then((response) => response.json())
-            .then((json) => {
-                json.filter(plugin => validPlugin(plugin))
-                    .sort(function (a, b) { return compareStrings(a.Name, b.Name) })
-                    .forEach(plugin => {
-                        if (plugin.DalamudApiLevel === currentApi) {
-                            const e = createCard(plugin);
-                            pluginList.append(e);
-                            return;
-                        }
-                        if (Object.keys(obsoleteInternalNames).includes(plugin.InternalName)) {
-                            const e = createCard(plugin, "Obsolete");
-                            obsolete.append(e);
-                            return;
-                        }
-                        if (adoptableInternalNames.includes(plugin.InternalName)) {
-                            const e = createCard(plugin, "Adoptable");
-                            adoptable.append(e);
-                            return;
-                        }
-                        if (staleInternalNames.includes(plugin.InternalName)) {
-                            const e = createCard(plugin, "Stale");
-                            stale.append(e);
-                        }
-                        if (discontinuedInternalNames.includes(plugin.InternalName)) {
-                            const e = createCard(plugin, "Discontinued");
-                            discontinued.append(e);
-                        }
-                        if (plugin.DalamudApiLevel === currentApi - 1) {
-                            const e = createCard(plugin, "Outdated");
-                            outdated.append(e);
-                        }
+        const validNonCurrent = adoptableInternalNames + staleInternalNames + discontinuedInternalNames + Object.keys(obsoleteInternalNames);
+        const isValidPlugin = (plugin) => plugin.DalamudApiLevel >= currentApi - 1 || validNonCurrent.includes(plugin.InternalName);
 
-                    });
-            });
+        function createCard(plugin, type) {
+            const card = document.createElement('li');
+            if (type) {
+                card.dataset.type = type;
+                card.classList.add('ribbon', type.toLowerCase());
+            }
 
-        function compareStrings(a, b) {
-            a = a.toLowerCase();
-            b = b.toLowerCase();
+            const header = document.createElement('header');
+            card.append(header);
 
-            return (a < b) ? -1 : (a > b) ? 1 : 0;
-        }
-
-        function validPlugin(plugin) {
-            return plugin.DalamudApiLevel >= currentApi - 1 || (adoptableInternalNames + staleInternalNames +
-                discontinuedInternalNames + Object.keys(obsoleteInternalNames)).includes(plugin.InternalName);
-        }
-
-        function createCard(plugin, status = null) {
-            const e = document.createElement('div');
-            e.id = plugin.InternalName;
-            e.classList.add("plugin");
-            console.log(plugin.InternalName);
-            const banned = bannedPlugins.find(obj => {
-                return obj.Name === plugin.InternalName && obj.AssemblyVersion === plugin.AssemblyVersion
-            }) !== undefined;
-            console.log(banned);
+            // plugin icon
             const icon = document.createElement('img');
-            if (plugin.IconUrl !== null) {
-                icon.src = plugin.IconUrl;
-            }
-            else {
-                icon.src = `https://raw.githubusercontent.com/goatcorp/PluginDistD17/main/${plugin._Dip17Channel}/${plugin.InternalName}/images/icon.png`;
-            }
-            icon.setAttribute("onerror", "this.src='https://github.com/goatcorp/DalamudAssets/blob/master/UIRes/defaultIcon.png?raw=true'");
-            e.prepend(icon);
+            icon.classList.add('icon');
+            icon.src = plugin.IconUrl ?? `https://raw.githubusercontent.com/goatcorp/PluginDistD17/main/${plugin._Dip17Channel}/${plugin.InternalName}/images/icon.png`;
+            icon.addEventListener('error', function() {
+                this.src = 'https://github.com/goatcorp/DalamudAssets/blob/master/UIRes/defaultIcon.png?raw=true';
+            });
+            header.append(icon);
 
-            if (plugin.DalamudApiLevel === currentApi - 1) {
-                const outdated = document.createElement("img");
-                outdated.src = "https://github.com/goatcorp/DalamudAssets/blob/master/UIRes/outdatedInstallableIcon.png?raw=true";
-                outdated.classList.add("outdated");
-                e.prepend(outdated);
+            // plugin name
+            const name = document.createElement('h3');
+            if (plugin.RepoUrl) {
+                const link = document.createElement('a');
+                name.append(link);
+                link.href = plugin.RepoUrl;
+                link.innerText = plugin.Name;
+                if (plugin.IsTestingExclusive) {
+                    link.classList.add('testing');
+                }
+            } else {
+                name.innerText = plugin.Name;
+            }
+            header.append(name);
+
+            // fields every plugin has: author, punchline and description
+            const attributeElements = {};
+            ['Author', 'Punchline', 'Description'].forEach((attribute) => {
+                const e = document.createElement('div');
+                e.innerText = plugin[attribute];
+                e.classList.add(attribute.toLowerCase());
+                attributeElements[attribute] = e;
+            });
+            header.append(attributeElements.Author);
+
+            // obsolete reason
+            if (type === 'Obsolete') {
+                const e = document.createElement('div');
+                e.innerText = obsoleteInternalNames[plugin.InternalName];
+                e.classList.add('hint');
+                card.append(e);
             }
 
-            const name = document.createElement('div');
-            name.classList.add("Name");
-            const link = document.createElement('a');
-            link.href = plugin.RepoUrl;
-            link.innerText = plugin.Name;
-            if (plugin.IsTestingExclusive) {
-                link.innerText += " (Testing Exclusive)";
-                link.classList.add("testingExclusive");
-            }
-            if (status !== null) {
-                link.innerText += ` (${status})`;
-                e.classList.add("outdated");
-            }
-            name.append(link);
-            if (status === "Obsolete") {
-                name.innerHTML += `<br><span class="reason">${obsoleteInternalNames[plugin.InternalName]}</span>`
+            // banned plugin indicator
+            if (bannedPlugins.find((p) => p.Name === plugin.InternalName && p.AssemblyVersion === plugin.AssemblyVersion)) {
+                card.classList.add('ribbon', 'banned');
+                card.dataset.type = 'Blocked';
+                const e = document.createElement('div');
+                e.innerText = 'Current version can not be installed. Please wait for an update.';
+                e.classList.add('hint');
+                card.append(e);
             }
 
-            if (banned) {
-                e.classList.add("banned");
-                name.innerHTML += "<span> Current version can not be installed. Please wait for update.</span>";
-            }
+            card.append(attributeElements.Punchline);
+            card.append(attributeElements.Description);
 
-            e.append(name);
-            attributes.forEach(attribute => {
-                const elem = document.createElement('div');
-                elem.innerText = plugin[attribute];
-                elem.classList.add(attribute);
-                e.append(elem);
-            })
-            const tags = document.createElement('ul');
-            tags.classList.add("Tags");
-
-            if (plugin.Tags !== null) {
-                plugin.Tags.forEach(tag => {
+            // list of tags
+            if (plugin.Tags) {
+                const tags = document.createElement('ul');
+                tags.classList.add('tags');
+                plugin.Tags.sort().forEach(tag => {
                     const e = document.createElement('li');
                     e.innerText = tag;
                     tags.append(e);
                 });
-                e.append(tags);
+                card.append(tags);
             }
 
-            return e;
+            // outdated icon overlay
+            if (plugin.DalamudApiLevel === currentApi - 1) {
+                const outdated = document.createElement('img');
+                outdated.src = 'https://github.com/goatcorp/DalamudAssets/blob/master/UIRes/outdatedInstallableIcon.png?raw=true';
+                outdated.classList.add('outdated');
+                header.append(outdated);
+            }
+
+            switch (type) {
+                case 'Obsolete':
+                    obsoletePlugins.append(card);
+                    break;
+
+                case 'Adoptable':
+                    adoptablePlugins.append(card);
+                    break;
+
+                case 'Stale':
+                    stalePlugins.append(card);
+                    break;
+
+                case 'Discontinued':
+                    discontinuedPlugins.append(card);
+                    break;
+
+                case 'Outdated':
+                    outdatedPlugins.append(card);
+                    break;
+
+                default:
+                    availablePlugins.append(card);
+                    break;
+            }
+
+            return card;
         }
+
+        const searchablePlugins = [];
+        fetch(pluginMaster)
+            .then((response) => response.json())
+            .then(async (json) => {
+                document.body.classList.remove('loading');
+                json.filter((plugin) => isValidPlugin(plugin))
+                    .sort((a, b) => a.Name.toLowerCase().localeCompare(b.Name.toLowerCase()))
+                    .forEach((plugin) => {
+                        let type;
+                        if (Object.keys(obsoleteInternalNames).includes(plugin.InternalName)) {
+                            type = 'Obsolete';
+                        } else if (adoptableInternalNames.includes(plugin.InternalName)) {
+                            type = 'Adoptable';
+                        } else if (staleInternalNames.includes(plugin.InternalName)) {
+                            type = 'Stale';
+                        } else if (discontinuedInternalNames.includes(plugin.InternalName)) {
+                            type = 'Discontinued';
+                        } else if (plugin.DalamudApiLevel === currentApi - 1) {
+                            type = 'Outdated';
+                        }
+
+                        searchablePlugins.push({
+                            plugin: {
+                                name: plugin.Name.toLowerCase(),
+                                internalName: plugin.InternalName.toLowerCase(),
+                                author: plugin.Author.toLowerCase(),
+                                punchline: plugin.Punchline?.toLowerCase(),
+                                description: plugin.Description?.toLowerCase(),
+                                tags: plugin.Tags?.join(' ').toLowerCase()
+                            },
+                            element: createCard(plugin, type)
+                        });
+                    });
+            });
+
+
+        // set up search
+        function shouldHidePlugin(plugin, searchText) {
+            if (plugin.name.includes(searchText)) {
+                return false;
+            }
+            if (plugin.internalName.includes(searchText)) {
+                return false;
+            }
+            if (plugin.author.includes(searchText)) {
+                return false;
+            }
+            if (plugin.punchline?.includes(searchText)) {
+                return false;
+            }
+            if (plugin.description?.includes(searchText)) {
+                return false;
+            }
+            if (plugin.tags?.includes(searchText)) {
+                return false;
+            }
+
+            return true;
+        }
+
+        document.getElementById('search').value = '';
+        document.getElementById('search').addEventListener('input', (event) => {
+            const searchText = event.target.value.toLowerCase().trim();
+            searchablePlugins.forEach((plugin) => {
+                plugin.element.classList.remove('hidden');
+                if (searchText !== '') {
+                    const hide = shouldHidePlugin(plugin.plugin, searchText);
+                    if (hide) {
+                        plugin.element.classList.add('hidden');
+                    }
+                }
+            });
+        });
     </script>
 </body>
 </html>
