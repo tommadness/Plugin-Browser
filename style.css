@@ -53,8 +53,11 @@ body > header::after {
 }
 
 body > header .right {
+    position: relative;
     display: flex;
     gap: 10px;
+    flex-shrink: 1;
+    min-width: 0;
 }
 
 body > header .right button {
@@ -69,7 +72,7 @@ body > header .right button:active {
 
 #search {
     flex: 1 1 0;
-    min-width: 100px;
+    min-width: 50px;
     max-width: 200px;
     padding: 3px 7px;
     border: 1px solid #808080;
@@ -112,6 +115,7 @@ main > h2 ~ h2 {
 h1 {
     margin: 0.25em 0;
     font-size: 1.3rem;
+    white-space: nowrap;
 }
 
 h2 {
@@ -121,6 +125,7 @@ h2 {
     margin: 0;
     font-size: 1.3rem;
     font-weight: normal;
+    white-space: nowrap;
     background-color: var(--bg);
     z-index: 101;
 }
