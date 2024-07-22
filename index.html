@@ -18,40 +18,42 @@
     </header>
 
     <main>
-        <h2>Available Plugins</h2>
         <section id="available">
+            <h2>Available Plugins</h2>
             <ol class="plugin-list"></ol>
         </section>
 
-        <h2>Outdated Plugins</h2>
         <section id="outdated">
+            <h2>Outdated Plugins</h2>
             <p>These plugins have not been updated by the developer for the current API level. Please be patient while they are being updated!</p>
             <ol class="plugin-list"></ol>
         </section>
 
-        <h2>Adoptable Plugins</h2>
         <section id="adoptable">
+            <h2>Adoptable Plugins</h2>
             <p>These plugins have been abandoned by their original developer. If you're interested in taking over development, please reach out to the developer and let us know on Discord.</p>
             <ol class="plugin-list"></ol>
         </section>
 
-        <h2>Stale Plugins</h2>
         <section id="stale">
+            <h2>Stale Plugins</h2>
             <p>These plugins have not been officially discontinued but have not been updated for the current API level in over six months. The developer remains active in the community. They may be coming back.</p>
             <ol class="plugin-list"></ol>
         </section>
 
-        <h2>Discontinued Plugins</h2>
         <section id="discontinued">
+            <h2>Discontinued Plugins</h2>
             <p>These plugins have been discontinued due to our plugin rules or the developer's discretion. They won't be coming back.</p>
             <ol class="plugin-list"></ol>
         </section>
 
-        <h2>Obsolete Plugins</h2>
         <section id="obsolete">
+            <h2>Obsolete Plugins</h2>
             <p>These plugins are now obsolete and are no longer needed. This can be due to new features added to the game or by being replaced by another plugin. They won't be coming back.</p>
             <ol class="plugin-list"></ol>
         </section>
+
+        <p id="no-plugins-found" class="hidden">No plugins match your search criteria.</p>
     </main>
 
     <script type="module">
@@ -113,10 +115,26 @@
         const isValidPlugin = (plugin) => plugin.DalamudApiLevel >= currentApi - 1 || validNonCurrent.includes(plugin.InternalName);
 
         function createCard(plugin, type) {
-            const card = document.createElement('li');
+            const listElement = document.createElement('li');
+            const card = document.createElement('div');
+            listElement.append(card);
+
+            // class (for label) and visual indicator for testing exclusive plugins
+            if (plugin.IsTestingExclusive) {
+                card.classList.add('testing');
+                const testingIndicator = document.createElement('div');
+                testingIndicator.classList.add('testing-indicator');
+                testingIndicator.title = 'Testing Exclusive';
+                listElement.append(testingIndicator);
+            }
+
+            // ribbon, for categories other than "available" plugins
+            let ribbon;
             if (type) {
-                card.dataset.type = type;
-                card.classList.add('ribbon', type.toLowerCase());
+                ribbon = document.createElement('div');
+                ribbon.classList.add('ribbon', type.toLowerCase());
+                ribbon.innerText = type;
+                card.append(ribbon);
             }
 
             const header = document.createElement('header');
@@ -138,9 +156,6 @@
                 name.append(link);
                 link.href = plugin.RepoUrl;
                 link.innerText = plugin.Name;
-                if (plugin.IsTestingExclusive) {
-                    link.classList.add('testing');
-                }
             } else {
                 name.innerText = plugin.Name;
             }
@@ -165,13 +180,22 @@
             }
 
             // banned plugin indicator
-            if (bannedPlugins.find((p) => p.Name === plugin.InternalName && p.AssemblyVersion === plugin.AssemblyVersion)) {
-                card.classList.add('ribbon', 'banned');
-                card.dataset.type = 'Blocked';
+            const bannedPlugin = bannedPlugins.find((p) => p.Name === plugin.InternalName && p.AssemblyVersion === plugin.AssemblyVersion);
+            if (bannedPlugin) {
                 const e = document.createElement('div');
                 e.innerText = 'Current version can not be installed. Please wait for an update.';
                 e.classList.add('hint');
                 card.append(e);
+
+                if (!ribbon) {
+                    ribbon = document.createElement('div');
+                    card.insertBefore(ribbon, header);
+                }
+                ribbon.classList.add('ribbon', 'banned');
+                ribbon.innerText = 'Blocked';
+                if (bannedPlugin.Reason) {
+                    ribbon.title = bannedPlugin.Reason;
+                }
             }
 
             card.append(attributeElements.Punchline);
@@ -198,35 +222,109 @@
             }
 
             switch (type) {
-                case 'Obsolete':
-                    obsoletePlugins.append(card);
+                case 'Outdated':
+                    outdatedPlugins.append(listElement);
                     break;
 
                 case 'Adoptable':
-                    adoptablePlugins.append(card);
+                    adoptablePlugins.append(listElement);
                     break;
 
                 case 'Stale':
-                    stalePlugins.append(card);
+                    stalePlugins.append(listElement);
                     break;
 
                 case 'Discontinued':
-                    discontinuedPlugins.append(card);
+                    discontinuedPlugins.append(listElement);
                     break;
 
-                case 'Outdated':
-                    outdatedPlugins.append(card);
+                case 'Obsolete':
+                    obsoletePlugins.append(listElement);
                     break;
 
                 default:
-                    availablePlugins.append(card);
+                    availablePlugins.append(listElement);
                     break;
             }
 
-            return card;
+            return listElement;
         }
 
+        // set up filter
         const searchablePlugins = [];
+
+        function shouldHidePlugin(plugin, searchText) {
+            if (plugin.name.includes(searchText)) {
+                return false;
+            }
+            if (plugin.internalName.includes(searchText)) {
+                return false;
+            }
+            if (plugin.author.includes(searchText)) {
+                return false;
+            }
+            if (plugin.punchline?.includes(searchText)) {
+                return false;
+            }
+            if (plugin.description?.includes(searchText)) {
+                return false;
+            }
+            if (plugin.tags?.includes(searchText)) {
+                return false;
+            }
+
+            return true;
+        }
+
+        function filterPlugins(searchText) {
+            const numPluginsVisible = {
+                available: 0,
+                outdated: 0,
+                adoptable: 0,
+                stale: 0,
+                discontinued: 0,
+                obsolete: 0
+            };
+            for (const category of Object.keys(numPluginsVisible)) {
+                document.getElementById(category).classList.remove('hidden');
+            }
+            document.getElementById('no-plugins-found').classList.add('hidden');
+
+            searchablePlugins.forEach((plugin) => {
+                plugin.element.classList.remove('hidden');
+                if (searchText !== '') {
+                    const hide = shouldHidePlugin(plugin.plugin, searchText);
+                    if (hide) {
+                        plugin.element.classList.add('hidden');
+                    } else {
+                        numPluginsVisible[plugin.plugin.type]++;
+                    }
+                } else {
+                    numPluginsVisible[plugin.plugin.type]++;
+                }
+            });
+
+            let someVisible = false;
+            for (const [category, numVisible] of Object.entries(numPluginsVisible)) {
+                if (numVisible === 0) {
+                    document.getElementById(category).classList.add('hidden');
+                } else {
+                    someVisible = true;
+                }
+            }
+            if (!someVisible) {
+                document.getElementById('no-plugins-found').classList.remove('hidden');
+            }
+        }
+
+        document.getElementById('search').value = '';
+        document.getElementById('search').addEventListener('input', (event) => {
+            const searchText = event.target.value.toLowerCase().trim();
+            filterPlugins(searchText);
+        });
+
+
+        // fetch plugins
         fetch(pluginMaster)
             .then((response) => response.json())
             .then(async (json) => {
@@ -254,51 +352,16 @@
                                 author: plugin.Author.toLowerCase(),
                                 punchline: plugin.Punchline?.toLowerCase(),
                                 description: plugin.Description?.toLowerCase(),
-                                tags: plugin.Tags?.join(' ').toLowerCase()
+                                tags: plugin.Tags?.join(' ').toLowerCase(),
+                                type: type?.toLowerCase() ?? 'available'
                             },
                             element: createCard(plugin, type)
                         });
                     });
+
+                // run once to hide empty categories
+                filterPlugins('');
             });
-
-
-        // set up search
-        function shouldHidePlugin(plugin, searchText) {
-            if (plugin.name.includes(searchText)) {
-                return false;
-            }
-            if (plugin.internalName.includes(searchText)) {
-                return false;
-            }
-            if (plugin.author.includes(searchText)) {
-                return false;
-            }
-            if (plugin.punchline?.includes(searchText)) {
-                return false;
-            }
-            if (plugin.description?.includes(searchText)) {
-                return false;
-            }
-            if (plugin.tags?.includes(searchText)) {
-                return false;
-            }
-
-            return true;
-        }
-
-        document.getElementById('search').value = '';
-        document.getElementById('search').addEventListener('input', (event) => {
-            const searchText = event.target.value.toLowerCase().trim();
-            searchablePlugins.forEach((plugin) => {
-                plugin.element.classList.remove('hidden');
-                if (searchText !== '') {
-                    const hide = shouldHidePlugin(plugin.plugin, searchText);
-                    if (hide) {
-                        plugin.element.classList.add('hidden');
-                    }
-                }
-            });
-        });
     </script>
 </body>
 </html>
