@@ -38,7 +38,8 @@
     "TabTab",
     "TheDot",
     "Tippy",
-    "WhatDidYouSay"
+    "WhatDidYouSay",
+    "WinTitle"
   ],
   "stale": [
     "KikoGuide",
