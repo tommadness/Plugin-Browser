@@ -10,6 +10,7 @@
     "ChatTranslator",
     "CoinPouch",
     "CollectorsAnxiety",
+    "DeviceChangeFix",
     "DomanMahjongStatus",
     "FantasyPlayer.Dalamud",
     "DalamudVox",
@@ -37,7 +38,8 @@
     "TabTab",
     "TheDot",
     "Tippy",
-    "WhatDidYouSay"
+    "WhatDidYouSay",
+    "WinTitle"
   ],
   "stale": [
     "KikoGuide",
