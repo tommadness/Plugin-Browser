@@ -18,6 +18,7 @@
     "Glamaholic",
     "GoodFriend",
     "HidePadlock",
+    "KikoGuide",
     "SupineSnail.JobGaugeAdjustments",
     "MPTimer",
     "MountCollectioner",
@@ -40,7 +41,6 @@
     "WhatDidYouSay"
   ],
   "stale": [
-    "KikoGuide",
     "TheHeartOfTheParty"
   ],
   "discontinued": [
