@@ -19,6 +19,7 @@
     "GoodFriend",
     "HidePadlock",
     "KikoGuide",
+    "Kapture",
     "SupineSnail.JobGaugeAdjustments",
     "MPTimer",
     "MountCollectioner",
@@ -56,6 +57,7 @@
     "KitchenSync": "Now a feature in SimpleTweaks",
     "SlideCast": "Now a feature in SimpleTweaks",
     "VoidList": "Replaced by Visibility",
-    "WheresWOLdo": "Replaced by \"Where am I again?\""
+    "WheresWOLdo": "Replaced by \"Where am I again?\"",
+    "XIVJitterFix": "SquareEnix fixed it, no longer necessary"
   }
 }
