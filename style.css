@@ -5,6 +5,7 @@
 
     --link: light-dark(#00e, #88f);
     --link-visited: light-dark(#51c, #fbf);
+    --link-inverse-fg: light-dark(white, black);
 
     --ban-color: light-dark(#800, #c00);
 
@@ -125,7 +126,7 @@ nav ol a {
 }
 
 nav ol a.active {
-    color: var(--bg);
+    color: var(--link-inverse-fg);
     background-color: var(--link);
 }
 
