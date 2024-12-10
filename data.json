@@ -15,7 +15,6 @@
     "DalamudVox",
     "Distance",
     "GearsetHelperPlugin",
-    "Glamaholic",
     "GoodFriend",
     "HidePadlock",
     "KikoGuide",
@@ -33,17 +32,13 @@
     "Reset enmity command",
     "Say What?",
     "SideHUDPlugin",
-    "SillyChat",
     "SimpleCompare",
     "SizeMattersFishing",
     "TabTab",
     "TheDot",
-    "Tippy",
     "WhatDidYouSay"
   ],
-  "stale": [
-    "TheHeartOfTheParty"
-  ],
+  "stale": [],
   "discontinued": [
     "OopsAllLalafells"
   ],
