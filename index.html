@@ -10,11 +10,27 @@
 
 <body class="loading">
     <header>
-        <h1>Dalamud Plugins</h1>
-        <div class="right">
-            <button id="color-scheme" type="button"></button>
-            <input id="search" type="search" placeholder="Filter">
+        <div>
+            <h1>Dalamud Plugins</h1>
+            <div class="right">
+                <button id="color-scheme" type="button"></button>
+                <input id="search" type="search" placeholder="Filter">
+            </div>
         </div>
+
+        <nav>
+            <ol>
+                <li>Browse plugins:</li>
+                <li><a id="available-link" href="#available">Available</a></li>
+                <li><a id="outdated-link" href="#outdated">Outdated</a></li>
+                <li><a id="adoptable-link" href="#adoptable">Adoptable</a></li>
+                <li><a id="stale-link" href="#stale">Stale</a></li>
+                <li><a id="discontinued-link" href="#discontinued">Discontinued</a></li>
+                <li><a id="obsolete-link" href="#obsolete">Obsolete</a></li>
+            </ol>
+        </nav>
+
+        <hr>
     </header>
 
     <main>
@@ -183,8 +199,13 @@
             const bannedPlugin = bannedPlugins.find((p) => p.Name === plugin.InternalName && p.AssemblyVersion === plugin.AssemblyVersion);
             if (bannedPlugin) {
                 const e = document.createElement('div');
-                e.innerText = 'Current version can not be installed. Please wait for an update.';
-                e.classList.add('hint');
+                let banText = 'Current version can not be installed. Please wait for an update.'
+                if (bannedPlugin.Reason) {
+                    banText += ' Reason: ' + bannedPlugin.Reason;
+                }
+
+                e.innerText = banText;
+                e.classList.add('hint', 'banned');
                 card.append(e);
 
                 if (!ribbon) {
@@ -193,9 +214,6 @@
                 }
                 ribbon.classList.add('ribbon', 'banned');
                 ribbon.innerText = 'Blocked';
-                if (bannedPlugin.Reason) {
-                    ribbon.title = bannedPlugin.Reason;
-                }
             }
 
             card.append(attributeElements.Punchline);
@@ -250,7 +268,8 @@
             return listElement;
         }
 
-        // set up filter
+
+        // search
         const searchablePlugins = [];
 
         function shouldHidePlugin(plugin, searchText) {
@@ -287,6 +306,7 @@
             };
             for (const category of Object.keys(numPluginsVisible)) {
                 document.getElementById(category).classList.remove('hidden');
+                document.getElementById(category + '-link').parentElement.classList.remove('hidden');
             }
             document.getElementById('no-plugins-found').classList.add('hidden');
 
@@ -308,6 +328,7 @@
             for (const [category, numVisible] of Object.entries(numPluginsVisible)) {
                 if (numVisible === 0) {
                     document.getElementById(category).classList.add('hidden');
+                    document.getElementById(category + '-link').parentElement.classList.add('hidden');
                 } else {
                     someVisible = true;
                 }
@@ -315,12 +336,54 @@
             if (!someVisible) {
                 document.getElementById('no-plugins-found').classList.remove('hidden');
             }
+
+            // trigger category link highlight logic
+            handleScroll();
         }
 
         document.getElementById('search').value = '';
         document.getElementById('search').addEventListener('input', (event) => {
             const searchText = event.target.value.toLowerCase().trim();
             filterPlugins(searchText);
+        });
+
+
+        // scroll handling
+        function handleScroll() {
+            let activeCategoryLink;
+            const categories = ['available', 'outdated', 'adoptable', 'stale', 'discontinued', 'obsolete'];
+            // find the currently "active" category by comparing document scroll
+            // position to the position of headers of each category
+            for (const category of categories) {
+                const h2 = document.getElementById(category).querySelector('h2');
+                const link = document.getElementById(category + '-link');
+                if (link.parentElement.classList.contains('hidden')) {
+                    continue;
+                }
+
+                if (document.documentElement.scrollTop + 150 > h2.offsetTop) {
+                    activeCategoryLink = link;
+                }
+                link.classList.remove('active');
+            }
+
+            activeCategoryLink.classList.add('active');
+        }
+
+        let lastHandledScroll = 0;
+        let handleScrollTimeout;
+        document.addEventListener('scroll', () => {
+            const now = performance.now();
+            const delta = now - lastHandledScroll;
+            if (now - lastHandledScroll > 50) {
+                lastHandledScroll = now;
+                handleScroll();
+            } else {
+                if (handleScrollTimeout) {
+                    window.clearTimeout(handleScrollTimeout);
+                }
+                handleScrollTimeout = window.setTimeout(handleScroll, delta);
+            }
         });
 
 
@@ -361,6 +424,13 @@
 
                 // run once to hide empty categories
                 filterPlugins('');
+
+                // if a hash is set, set `window.location` to itself to scroll to it again.
+                // setting the entire window.location is required, as simply doing something
+                // like `window.location.hash = window.location.hash` appears to only work in firefox
+                if (window.location.hash.length > 0) {
+                    window.location = window.location;
+                }
             });
     </script>
 </body>
