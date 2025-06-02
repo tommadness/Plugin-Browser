@@ -1,6 +1,7 @@
 <!--suppress JSUnresolvedVariable, JSIncompatibleTypesComparison, HtmlRequiredLangAttribute -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>Dalamud Plugin Browser</title>
     <meta charset="utf-8">
@@ -41,31 +42,36 @@
 
         <section id="outdated">
             <h2>Outdated Plugins</h2>
-            <p>These plugins have not been updated by the developer for the current API level. Please be patient while they are being updated!</p>
+            <p>These plugins have not been updated by the developer for the current API level. Please be patient while
+                they are being updated!</p>
             <ol class="plugin-list"></ol>
         </section>
 
         <section id="adoptable">
             <h2>Adoptable Plugins</h2>
-            <p>These plugins have been abandoned by their original developer. If you're interested in taking over development, please reach out to the developer and let us know on Discord.</p>
+            <p>These plugins have been abandoned by their original developer. If you're interested in taking over
+                development, please reach out to the developer and let us know on Discord.</p>
             <ol class="plugin-list"></ol>
         </section>
 
         <section id="stale">
             <h2>Stale Plugins</h2>
-            <p>These plugins have not been officially discontinued but have not been updated for the current API level in over six months. The developer remains active in the community. They may be coming back.</p>
+            <p>These plugins have not been officially discontinued but have not been updated for the current API level
+                in over six months. The developer remains active in the community. They may be coming back.</p>
             <ol class="plugin-list"></ol>
         </section>
 
         <section id="discontinued">
             <h2>Discontinued Plugins</h2>
-            <p>These plugins have been discontinued due to our plugin rules or the developer's discretion. They won't be coming back.</p>
+            <p>These plugins have been discontinued due to our plugin rules or the developer's discretion. They won't be
+                coming back.</p>
             <ol class="plugin-list"></ol>
         </section>
 
         <section id="obsolete">
             <h2>Obsolete Plugins</h2>
-            <p>These plugins are now obsolete and are no longer needed. This can be due to new features added to the game or by being replaced by another plugin. They won't be coming back.</p>
+            <p>These plugins are now obsolete and are no longer needed. This can be due to new features added to the
+                game or by being replaced by another plugin. They won't be coming back.</p>
             <ol class="plugin-list"></ol>
         </section>
 
@@ -104,12 +110,12 @@
                 return json;
             });
 
-		const currentApi = await fetch(data.dalamudProjUrl)
-			.then((response) => response.text())
-			.then((dalamudProjUrlText) => {
-				const match = dalamudProjUrlText.match(/<DalamudVersion>(\d+)\.\d+\.\d+\.\d+<\/DalamudVersion>/);
-				return match ? parseInt(match[1].trim()) : null;
-			});
+        const currentApi = await fetch(data.dalamudProjUrl)
+            .then((response) => response.text())
+            .then((dalamudProjUrlText) => {
+                const match = dalamudProjUrlText.match(/<DalamudVersion>(\d+)\.\d+\.\d+\.\d+<\/DalamudVersion>/);
+                return match ? parseInt(match[1].trim()) : null;
+            });
 
         const bannedPlugins = await fetch(data.bannedPluginUrl)
             .then((response) => response.json());
@@ -158,9 +164,10 @@
 
             // plugin icon
             const icon = document.createElement('img');
+            icon.loading = "lazy";
             icon.classList.add('icon');
             icon.src = plugin.IconUrl ?? `https://raw.githubusercontent.com/goatcorp/PluginDistD17/main/${plugin._Dip17Channel}/${plugin.InternalName}/images/icon.png`;
-            icon.addEventListener('error', function() {
+            icon.addEventListener('error', function () {
                 this.src = 'https://github.com/goatcorp/DalamudAssets/blob/master/UIRes/defaultIcon.png?raw=true';
             });
             header.append(icon);
@@ -442,4 +449,5 @@
             });
     </script>
 </body>
+
 </html>
