@@ -341,16 +341,24 @@
             handleScroll();
         }
 
-        document.getElementById('search').value = '';
+        const urlParams = new URLSearchParams(window.location.search);
+        document.getElementById('search').value = urlParams.get("search" ?? "");
         document.getElementById('search').addEventListener('input', (event) => {
             const searchText = event.target.value.toLowerCase().trim();
+            if (searchText) {
+                urlParams.set("search", searchText)
+            } else {
+                urlParams.delete("search");
+            }
+            const newUrl = ``;
+            history.replaceState({}, '', `${window.location.pathname}?${urlParams.toString()}`);
             filterPlugins(searchText);
         });
 
 
         // scroll handling
         function handleScroll() {
-            let activeCategoryLink;
+            let activeCategoryLink = null;
             const categories = ['available', 'outdated', 'adoptable', 'stale', 'discontinued', 'obsolete'];
             // find the currently "active" category by comparing document scroll
             // position to the position of headers of each category
@@ -423,7 +431,7 @@
                     });
 
                 // run once to hide empty categories
-                filterPlugins('');
+                filterPlugins(urlParams.get("search") ?? "");
 
                 // if a hash is set, set `window.location` to itself to scroll to it again.
                 // setting the entire window.location is required, as simply doing something
