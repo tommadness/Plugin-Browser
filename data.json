@@ -48,6 +48,7 @@
     "BrowserHost.Plugin": "Replaced by Browsingway",
     "CharSyncPlugin": "Replaced by Character Data Sync",
     "ChatExtender": "Split into Chat Bubbles, Chat Translator, XIVLogger",
+    "GlamourSpamRemover": "Now a vanilla feature",
     "GoodMemory": "Now a vanilla feature",
     "JobIcons": "Replaced by PartyIcons",
     "KitchenSync": "Now a feature in SimpleTweaks",
@@ -57,3 +58,4 @@
     "XIVJitterFix": "SquareEnix fixed it, no longer necessary"
   }
 }
+
