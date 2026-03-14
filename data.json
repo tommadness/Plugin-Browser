@@ -37,7 +37,12 @@
     "SizeMattersFishing",
     "TabTab",
     "TheDot",
-    "WhatDidYouSay"
+    "WhatDidYouSay",
+    "Dalamud.DiscordBridge",
+    "Dalamud.RichPresence",
+    "owofy",
+    "ChatTyper",
+    "FlashOnTell"
   ],
   "stale": [],
   "discontinued": [
